@@ -1,0 +1,37 @@
+# Ignore Roadiz tools and cache for
+# creating a docker image
+Dockerfile.dockerignore
+.DS_Store
+.git
+.github
+.gitignore
+.gitlab-ci.yml
+.gitmodules
+.idea
+.data
+.sass-cache
+tests
+README.md
+Dockerfile
+Dockerfile.archive
+docker-compose.yml
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache
+.pytest_cache
+.hypothesis

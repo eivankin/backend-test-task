@@ -1,0 +1,31 @@
+version: '3'
+services:
+  sensor:
+    build:
+      context: ./src
+      args:
+        SERVICE_NAME: sensor
+    environment:
+      - CONTROLLER_HOST=controller
+    command: python sensor/main.py
+    depends_on:
+      - controller
+
+  controller:
+    build:
+      context: ./src
+      args:
+        SERVICE_NAME: controller
+    restart: on-failure
+    depends_on:
+      - manipulator
+    environment:
+      - MANIPULATOR_HOST=manipulator
+    command: python controller/main.py
+
+  manipulator:
+    build:
+      context: ./src
+      args:
+        SERVICE_NAME: manipulator
+    command: python manipulator/main.py
