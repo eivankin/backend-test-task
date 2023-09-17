@@ -2,13 +2,12 @@ import asyncio
 import datetime as dt
 import subprocess
 
-from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi import Depends, FastAPI, HTTPException, status
 
-from controller.command_history import HistoryEntry
-from common.messages.from_sensor import SensorMessage
 from common.configs.controller import settings
+from common.messages.from_sensor import SensorMessage
+from controller.command_history import HistoryEntry
 from controller.db.decision_history_repo import DecisionHistoryRepo
-from common.configs.logger import logging
 from controller.db.sensor_data_repo import SensorDataRepo
 from controller.make_decision import decision_loop
 

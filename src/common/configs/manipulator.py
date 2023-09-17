@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 from common.messages.from_controller import ManipulatorCommand
 
 

@@ -1,4 +1,4 @@
-from random import seed, normalvariate
+from random import normalvariate, seed
 
 from common.configs.sensor import settings
 

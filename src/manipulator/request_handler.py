@@ -1,5 +1,5 @@
-from socketserver import StreamRequestHandler
 import logging
+from socketserver import StreamRequestHandler
 
 from common.messages.from_controller import ControllerDecision
 

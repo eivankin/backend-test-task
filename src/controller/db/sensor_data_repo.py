@@ -3,10 +3,10 @@ from collections import defaultdict
 
 from motor.motor_asyncio import AsyncIOMotorCursor
 
-from controller.db.abstract_repo import AbstractRepo
+from common.configs.logger import logging
 from common.messages.from_sensor import SensorMessage
 from controller.db import sensor_data_collection
-from common.configs.logger import logging
+from controller.db.abstract_repo import AbstractRepo
 
 
 class SensorDataRepo(AbstractRepo):
@@ -39,7 +39,7 @@ class SensorDataRepo(AbstractRepo):
         self, start: dt.datetime | None = None, end: dt.datetime | None = None
     ) -> tuple[int, float, float]:
         """
-        Calculates sample mean and standard deviation for sensor data in given period
+        Calculates sample mean and standard deviation for sensor data in given period.
 
         :param start: start of the period
         :param end: end of the period

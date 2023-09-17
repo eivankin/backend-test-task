@@ -1,15 +1,14 @@
 import datetime as dt
-import logging
 from collections import defaultdict
 
 import pymongo
 from bson import ObjectId
 
 from common.configs import manipulator
-from controller.db.abstract_repo import AbstractRepo
-from controller.db import decision_history_collection
-from controller.command_history import HistoryEntry
 from common.messages.from_controller import ManipulatorCommand
+from controller.command_history import HistoryEntry
+from controller.db import decision_history_collection
+from controller.db.abstract_repo import AbstractRepo
 
 
 class DecisionHistoryRepo(AbstractRepo):

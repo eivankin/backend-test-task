@@ -6,13 +6,12 @@ import time
 from scipy import stats
 
 from common.configs import controller
+from common.configs.logger import logging
 from common.messages.from_controller import ManipulatorCommand
 from controller.db import pop_last_mean, save_mean
 from controller.db.decision_history_repo import DecisionHistoryRepo
 from controller.db.sensor_data_repo import SensorDataRepo
 from controller.socket_client import send_command_async
-from common.configs.logger import logging
-
 
 history_repo: DecisionHistoryRepo = DecisionHistoryRepo.create()
 sensor_repo: SensorDataRepo = SensorDataRepo.create()
@@ -25,7 +24,7 @@ def t_test(
     sample_std: float,
     p_critical: float,
 ) -> bool:
-    """Returns True if t-test rejects the null hypothesis"""
+    """Returns True if t-test rejects the null hypothesis."""
     t_statistic = (sample_mean - hypothesis_mean) / (
         sample_std / math.sqrt(sample_size)
     )
@@ -37,7 +36,7 @@ async def make_decision(
     use_data_before: dt.datetime, p_critical: float = 0.05
 ) -> ManipulatorCommand:
     """
-    Runs single mean t-test on sensor data with the previous mean as hypothesis
+    Runs single mean t-test on sensor data with the previous mean as hypothesis.
 
     :param use_data_before: datetime of the end of the period to consider
     :param p_critical: p-value for t-test

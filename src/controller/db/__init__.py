@@ -8,7 +8,6 @@ from motor.motor_asyncio import (
 
 from common.configs.controller import settings
 
-
 client = AsyncIOMotorClient(str(settings.MONGO_URL))
 database: AsyncIOMotorDatabase = client.get_database(settings.MONGO_DB_NAME)
 sensor_data_collection: AsyncIOMotorCollection = database.get_collection("sensor_data")

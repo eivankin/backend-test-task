@@ -1,9 +1,8 @@
 from socketserver import TCPServer
 
+from common.configs.logger import logging
 from common.configs.manipulator import settings
 from manipulator.request_handler import ManipulatorCommandHandler
-from common.configs.logger import logging
-
 
 if __name__ == "__main__":
     logging.info(f"Manipulator listening on port {settings.PORT}")

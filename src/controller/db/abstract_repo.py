@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
 import datetime as dt
+from abc import ABC, abstractmethod
 from typing import TypeVar
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
 from pydantic import BaseModel, TypeAdapter
-
 
 T = TypeVar("T", bound=BaseModel)
 

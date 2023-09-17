@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic.networks import MongoDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ControllerSettings(BaseSettings):

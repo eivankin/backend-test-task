@@ -4,26 +4,25 @@ import datetime as dt
 import aiohttp
 import aiohttp.client_exceptions
 
-from common.configs import sensor, controller
+from common.configs import controller, sensor
 from common.configs.logger import logging
-from sensor.data_generator import sample_sensor
 from common.messages.from_sensor import SensorMessage
+from sensor.data_generator import sample_sensor
 
 
-async def send_data(data: SensorMessage):
+async def send_data(data: SensorMessage) -> None:
     try:
         async with aiohttp.ClientSession(
             f"http://{controller.settings.HOST}:{controller.settings.PORT}"
-        ) as session:
-            async with session.post(
-                f"{controller.settings.SENSOR_POST_ENDPOINT}",
-                json=data,
-            ) as response:
-                if not response.ok:
-                    logging.error(
-                        f"Got error while sending request to the controller: "
-                        f"{response.status} {response.reason}"
-                    )
+        ) as session, session.post(
+            f"{controller.settings.SENSOR_POST_ENDPOINT}",
+            json=data,
+        ) as response:
+            if not response.ok:
+                logging.error(
+                    f"Got error while sending request to the controller: "
+                    f"{response.status} {response.reason}"
+                )
 
     except aiohttp.client_exceptions.ClientConnectionError as e:
         logging.error(
@@ -36,7 +35,7 @@ async def assigner(
     messages_queue: asyncio.Queue,
     interval_secs: float = 1 / (sensor.settings.RPS * sensor.settings.RATE_MULTIPLIER),
     display_progress: bool = sensor.settings.DISPLAY_TQDM,
-):
+) -> None:
     progress = None
     if display_progress:
         try:
@@ -59,13 +58,13 @@ async def assigner(
         await asyncio.sleep(interval_secs)
 
 
-async def worker(messages_queue: asyncio.Queue):
+async def worker(messages_queue: asyncio.Queue) -> None:
     while True:
         task = await messages_queue.get()
         await send_data(task)
 
 
-async def main(pool_size: int = sensor.settings.NUM_WORKERS):
+async def main(pool_size: int = sensor.settings.NUM_WORKERS) -> None:
     messages_queue = asyncio.Queue()
     workers = [asyncio.create_task(worker(messages_queue)) for _ in range(pool_size)]
     await asyncio.gather(assigner(messages_queue), *workers)
