@@ -56,3 +56,17 @@ background async loop with decision algorithm.
 For each period calculates mean and standard deviation, changes manipulator status if mean is
 significantly (checked using t-test with 0.05 level of significance) different from the previous
 period.
+
+#### History
+
+`/history` endpoint returns data in the following format:
+
+```javascript
+[
+    {
+        "from_datetime": "datetime in ISO 8601 format",
+        "to_datetime": "datetime in ISO 8601 format",
+        "status": "up" | "down"
+    }
+]
+```
