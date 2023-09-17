@@ -13,17 +13,6 @@ from controller.db.sensor_data_repo import SensorDataRepo
 from controller.make_decision import decision_loop
 
 app = FastAPI()
-reqs = 0
-
-
-async def count_rps():
-    global reqs
-    while True:
-        logging.error(
-            f"RPS per worker: {reqs}, total (predicted): {reqs * settings.NUM_WORKERS}"
-        )
-        reqs = 0
-        await asyncio.sleep(1)
 
 
 def get_data_range(
@@ -40,8 +29,6 @@ def get_data_range(
 async def post_data(
     data: SensorMessage, repository: SensorDataRepo = Depends(SensorDataRepo.create)
 ) -> None:
-    global reqs
-    reqs += 1
     await repository.save(data)
 
 
@@ -51,12 +38,6 @@ async def get_history(
     repository: DecisionHistoryRepo = Depends(DecisionHistoryRepo.create),
 ) -> list[HistoryEntry]:
     return await repository.get_between(*data_range)
-
-
-@app.on_event("startup")
-async def startup_event():
-    # asyncio.create_task(decision_loop())
-    asyncio.create_task(count_rps())
 
 
 if __name__ == "__main__":
