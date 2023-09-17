@@ -9,6 +9,7 @@ from common.messages.from_controller import ManipulatorCommand
 from controller.command_history import HistoryEntry
 from controller.db import decision_history_collection
 from controller.db.abstract_repo import AbstractRepo
+from common.configs.logger import logging
 
 
 class DecisionHistoryRepo(AbstractRepo):
@@ -75,6 +76,7 @@ class DecisionHistoryRepo(AbstractRepo):
             if previous_decision == ManipulatorCommand.DOWN
             else ManipulatorCommand.DOWN
         )
+        logging.info(f"Changing status from '{previous_decision}' to '{new_command}'")
         await self._collection.update_one(
             {"_id": obj_id}, {"$set": {"to_datetime": datetime}}
         )
