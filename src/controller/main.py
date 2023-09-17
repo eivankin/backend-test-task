@@ -1,9 +1,8 @@
 import asyncio
 import datetime as dt
-import logging
 import time
 
-from fastapi import FastAPI, HTTPException, status, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException, status, Depends
 import uvicorn
 
 from common.messages.from_controller import ManipulatorCommand
@@ -11,6 +10,7 @@ from controller.command_history import HistoryEntry
 from common.messages.from_sensor import SensorMessage
 from common.configs import controller
 from controller.socket_client import send_command_async
+from common.configs.logger import logging
 
 
 app = FastAPI()
@@ -30,7 +30,7 @@ def get_data_range(
 @app.post(controller.settings.SENSOR_POST_ENDPOINT)
 async def post_data(data: SensorMessage) -> None:
     global num_reqs
-    # TODO
+    # TODO: save data somewhere (Mongo DB?)
     num_reqs += 1
 
 
@@ -38,7 +38,7 @@ async def post_data(data: SensorMessage) -> None:
 async def get_history(
     data_range: tuple[dt.datetime | None, dt.datetime | None] = Depends(get_data_range),
 ) -> list[HistoryEntry]:
-    # TODO
+    # TODO: fetch history from somewhere (Mongo DB?)
     return []
 
 
@@ -47,11 +47,11 @@ async def decision_loop():
         before_decision = time.time()
         command = (
             ManipulatorCommand.UP if num_reqs % 2 else ManipulatorCommand.DOWN
-        )  # TODO
+        )  # TODO: implement actual decision algorithm
         try:
             await send_command_async(command)
         except OSError as e:
-            logging.info(f"Got error while sending manipulator command: {e}")
+            logging.error(f"Got error while sending manipulator command: {e}")
 
         await asyncio.sleep(
             controller.settings.DECISION_INTERVAL_SECS - (time.time() - before_decision)
@@ -64,4 +64,6 @@ async def startup_event():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=controller.settings.PORT)
+    uvicorn.run(
+        app, host="0.0.0.0", port=controller.settings.PORT, log_level=logging.ERROR
+    )

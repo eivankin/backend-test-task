@@ -7,6 +7,7 @@ services:
         SERVICE_NAME: sensor
     environment:
       - CONTROLLER_HOST=controller
+      - DISPLAY_TQDM=false
     command: python sensor/main.py
     depends_on:
       - controller
