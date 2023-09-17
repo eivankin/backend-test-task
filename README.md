@@ -16,6 +16,8 @@ More details about the task available [here](https://disk.yandex.ru/i/kjqK0SedfD
 
 ### The whole project
 
+Tested with Docker version 20.10.23+dfsg1 and Docker Compose version v2.2.3.
+
 1. Copy `.env.example` to `.env` and change it if needed:
     ```shell
     cp .env.example .env
@@ -28,7 +30,20 @@ More details about the task available [here](https://disk.yandex.ru/i/kjqK0SedfD
 
 ### Tests
 
-To be implemented.
+Python 3.11 is required to run the tests.
+
+1. Install requirements:
+    ```shell
+    pip install -r ./src/tests/requirements.txt -r ./controller/requirements.txt
+    ```
+2. Run tests:
+    ```shell
+    pytest ./src/tests
+    ```
+3. (Optional) check coverage:
+    ```shell
+    pytest --cov=controller ./src/tests
+    ```
 
 ## Implementation details
 
