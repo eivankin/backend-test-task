@@ -34,7 +34,7 @@ Python 3.11 is required to run the tests.
 
 1. Install requirements:
     ```shell
-    pip install -r ./src/tests/requirements.txt -r ./controller/requirements.txt
+    pip install -r ./src/tests/requirements.txt -r ./src/controller/requirements.txt
     ```
 2. Run tests:
     ```shell
