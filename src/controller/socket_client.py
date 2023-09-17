@@ -6,10 +6,11 @@ from common.configs import manipulator
 from common.messages.from_controller import ControllerDecision, ManipulatorCommand
 
 
-async def send_command_async(command: ManipulatorCommand, encoding="utf-8") -> None:
+async def send_command_async(
+    command: ManipulatorCommand, datetime: dt.datetime, encoding="utf-8"
+) -> None:
     payload = (
-        ControllerDecision(datetime=dt.datetime.now(), status=command).model_dump_json()
-        + "\n"
+        ControllerDecision(datetime=datetime, status=command).model_dump_json() + "\n"
     )
     _, writer = await asyncio.open_connection(
         manipulator.settings.HOST, manipulator.settings.PORT

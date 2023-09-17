@@ -1,28 +1,38 @@
-version: '3'
+version: '3.9'
+
+x-sensor: &sensor
+  build:
+    context: ./src
+    args:
+      SERVICE_NAME: sensor
+  command: wait-for-it -s controller:${CONTROLLER_PORT:-8080} -- python sensor/main.py
+  depends_on:
+    - controller
+
 services:
-  sensor:
-    build:
-      context: ./src
-      args:
-        SERVICE_NAME: sensor
+  amongo:
+    image: 'mongo'
     environment:
-      - CONTROLLER_HOST=controller
-      - DISPLAY_TQDM=false
-    command: python sensor/main.py
-    depends_on:
-      - controller
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - storage:/data/db:rw
+    command: --quiet --logpath /dev/null
 
   controller:
     build:
       context: ./src
       args:
         SERVICE_NAME: controller
-    restart: on-failure
     depends_on:
       - manipulator
+      - amongo
     environment:
-      - MANIPULATOR_HOST=manipulator
+      MANIPULATOR_HOST: manipulator
+      CONTROLLER_MONGO_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@amongo:27017
     command: python controller/main.py
+    ports:
+      - "8080:8080"
 
   manipulator:
     build:
@@ -30,3 +40,68 @@ services:
       args:
         SERVICE_NAME: manipulator
     command: python manipulator/main.py
+
+  sensor_1:
+    <<: *sensor
+    environment:
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_2:
+    <<: *sensor
+    environment:
+      SENSOR_MEAN: 5
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_3:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 100
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_4:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 20
+      SENSOR_MEAN: -3
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_5:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 20
+      SENSOR_MEAN: 3
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_6:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 100
+      SENSOR_MEAN: -100
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_7:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 1
+      SENSOR_MEAN: 100
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+  sensor_8:
+    <<: *sensor
+    environment:
+      SENSOR_STD: 5
+      SENSOR_MEAN: -5
+      CONTROLLER_HOST: controller
+      SENSOR_DISPLAY_TQDM: false
+
+
+volumes:
+  storage:
+    driver: local

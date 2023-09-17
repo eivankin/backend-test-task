@@ -49,6 +49,7 @@ async def assigner(
     while True:
         if display_progress:
             progress.update()
+            progress.set_description("\n")
 
         await messages_queue.put(
             SensorMessage(
