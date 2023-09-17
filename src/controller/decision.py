@@ -13,9 +13,6 @@ from controller.db.decision_history_repo import DecisionHistoryRepo
 from controller.db.sensor_data_repo import SensorDataRepo
 from controller.socket_client import send_command_async
 
-history_repo: DecisionHistoryRepo = DecisionHistoryRepo.create()
-sensor_repo: SensorDataRepo = SensorDataRepo.create()
-
 
 def t_test(
     hypothesis_mean: float,
@@ -33,11 +30,16 @@ def t_test(
 
 
 async def make_decision(
-    use_data_before: dt.datetime, p_critical: float = 0.05
+    use_data_before: dt.datetime,
+    history_repo: DecisionHistoryRepo,
+    sensor_repo: SensorDataRepo,
+    p_critical: float = 0.05,
 ) -> ManipulatorCommand:
     """
     Runs single mean t-test on sensor data with the previous mean as hypothesis.
 
+    :param sensor_repo: instance of SensorDataRepo
+    :param history_repo: instance of DecisionHistoryRepo
     :param use_data_before: datetime of the end of the period to consider
     :param p_critical: p-value for t-test
     :return: manipulator command, keeps previous if t-test fails to reject the null hypothesis
@@ -58,6 +60,9 @@ async def make_decision(
 
 
 async def decision_loop():
+    history_repo: DecisionHistoryRepo = DecisionHistoryRepo.create()
+    sensor_repo: SensorDataRepo = SensorDataRepo.create()
+
     before_decision = time.time()
     before_decision_datetime = dt.datetime.now()
     await history_repo.update_history(before_decision_datetime, True)
@@ -67,7 +72,9 @@ async def decision_loop():
         )
         before_decision = time.time()
         before_decision_datetime = dt.datetime.now()
-        command = await make_decision(before_decision_datetime)
+        command = await make_decision(
+            before_decision_datetime, history_repo, sensor_repo
+        )
         try:
             await send_command_async(command, before_decision_datetime)
         except OSError as e:

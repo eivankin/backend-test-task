@@ -9,7 +9,7 @@ from common.messages.from_sensor import SensorMessage
 from controller.command_history import HistoryEntry
 from controller.db.decision_history_repo import DecisionHistoryRepo
 from controller.db.sensor_data_repo import SensorDataRepo
-from controller.make_decision import decision_loop
+from controller.decision import decision_loop
 
 app = FastAPI()
 
